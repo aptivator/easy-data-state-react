@@ -167,7 +167,8 @@ dispatchers, actions, context to link a React component to a data state, and exp
 of operations that can be run on a piece of data.  These abstractions necessitate a code
 boilerplate that takes extra time to write, maintain, and get up-to-speed with.  The
 reader is encouraged to take a look at a Redux's example involving a simple counter
-datum and all of the requisite code required to implement it.
+and all of the requisite code required to implement it.  For juxtaposition, a simple
+counter example using `easy-data-state` can be seen [here](./example/src/App.jsx).
 
 `easy-data-state` and its React bindings are designed to link UI components to the
 application's data as easily as possible.  All a developer has to do is create an
@@ -186,27 +187,27 @@ and whenever a context is refreshed, React reruns all of the dependent component
 new data.  Each context can be viewed as a kind of a data bus for specific information.
 This makes contexts an obtuse data distribution option.  For instance, an authentication
 context may consist of, say, 5 pieces of data, yet not all components that tap into the
-context may need all of the pieces.  All components, however, linked to the context will
+context may need all of the these.  All components, however, linked to the context will
 be re-rendered when the context changes.  This has negative implications on performance
 and can result in side-effects requiring caching of some data for some components between
 updates.  Increasing the number of contexts will alleviate the problem somewhat while
 exacerbating contexts' instantiation downsides.  Contexts require provider components to
 activate them within the "markup" (JSX).  Updating a context requires re-render of its
 provider.  Enabling re-renders involves inclusion of a function(s) within a context data
-that would reset a provider's component state, rerunning the provider component and its
-context.  Because contexts are structural, they are usually layered around an application
-component that can be static or transcluded.  Sometimes this one-on-top-of-another onion-like
-layering does not work necessitating more esoteric arrangements. All of these arrangements
-make maintenance and testing difficult.  Because contexts are structural, the logic that
+that would reset a provider component state, rerunning the component and its context.
+Because contexts are structural, they are usually layered around an application component
+that can be static or transcluded.  Sometimes this one-on-top-of-another onion-like layering
+does not work necessitating more esoteric arrangements. All of these arrangements make
+maintenance and testing more difficult.  Because contexts are structural, the logic that
 updates them has to originate within them.
 
-`easy-data-state` used with its React interface has none of these problems.  Provider
-components are not required.  There is no need for some custom JSX structure to encapsulate
-the application.  A component is re-rendered only when the component's subscribed-to data
-changes.  `EasyDataState` instance is framework-agnostic and can be used anywhere within an
-application.  Testing of data state-linked components is straightforward: only a component
-and an `EasyDataState` instance are needed.  Performance is not compromised.  And, the code
-footprint needed to facilitate all of that is several times smaller than that of contexts.
+`easy-data-state` and its React interface have none of these problems.  Provider components
+are not required.  There is no need for some custom JSX structure to encapsulate the application.
+A component is re-rendered only when the component's subscribed-to data changes.  `EasyDataState`
+instance is framework-agnostic and can be used anywhere within an application.  Testing of data
+state-linked components is straightforward: only a component and an `EasyDataState` instance are
+needed (See [tests](./test/easy-data-state-react.test.js)).  Performance is not compromised.  And,
+the code footprint needed to facilitate all of that is several times smaller than that of contexts.
 
 <a name="atom-based-approaches"></a>
 ### Atom-Based Approaches
@@ -215,26 +216,25 @@ Libraries such as Recoil and Jotai implement an atom-based data state model. Ato
 pieces that are individually created and imported into dependent components.  Change in an atom's
 value triggers re-processing of the atom-linked components.  Such an approach is an improvement
 over Redux and Context.  `easy-data-state` does not implement a concept of an atom, but that of
-a data state.  The latter is usually an entirety or a significant subset of data used by an
-application.  The abstraction implemented by `easy-data-state` allows interaction with an
-overarching data management entity versus dealing with an implicit collection of atomic pieces
-each managing its own state.  
+a data state.  The latter is an entirety or a significant subset of data used by an application.
+The abstraction implemented by `easy-data-state` allows interaction with an overarching data
+management entity versus dealing with an implicit collection of atomic pieces each managing its
+own state.
 
 Practically, this translates into a more economical code.  Using atoms, more (probably way more)
 than one atom would have to be created.  Each of the atoms have to be individually exported and
 imported. A component that uses three atoms would have to import them separately along with
-concomitant hooks and then invoke a respective hook with each atom.  With `easy-data-state` this is
-unnecessary.  Only one state object is usually created.  If a component needs multiple pieces of
-data, then the data addresses can be specified as an array in one data state subscription hook
-call.   If one of the observed data changes, `easy-data-state` will provide the subscribed-to 
-data as one collection.
+concomitant hooks and then invoke a respective hook with each atom.  With `easy-data-state` only
+one state object is usually created.  If a component needs multiple pieces of data, then the data
+addresses can be specified as an array in one data state subscription hook call.   If one of the
+observed data changes, `easy-data-state` will provide the subscribed-to data as one collection.
 
 Updating state values with this library requires just a state object.  With atom-based systems,
-an atom has to be imported plus an appropriate hook.  Atom then has to be "given" to a hook to get
+an atom has to be imported plus an appropriate hook.  Atom then has to be passed to a hook to get
 an atom’s value setter, which is then called.  To update the values of multiple atoms, the above
 process has to be repeated for each atom.  Updating/writing multiple values with `easy-data-state`
 requires just one update call with data addresses and their new values specified as a plain object.
 
-Libraries such as Recoil are fairly large.  `easy-data-state` is under 400 lines with no
-dependencies.  The library is simpler, requires less code to use, is faster than the alternatives,
-and allows management of a complex data state through a single instance.
+Libraries such as Recoil are fairly large.  `easy-data-state` and `easy-data-state-read` bindings
+are under 400 lines with no dependencies.  The library is simpler, requires less code to use, is
+faster than the alternatives, and allows management of a complex data state through a single instance.
