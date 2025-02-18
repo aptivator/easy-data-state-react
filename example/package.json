@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "easy-data-state": "^1.0.0",
+    "easy-data-state-react": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
