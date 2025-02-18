@@ -32,7 +32,7 @@ upon which a component depends.
 To fetch the library, run the following command.
 
 ```
-npm install --save @easy-data-state/core @easy-data-state/react
+npm install --save easy-data-state easy-data-state-react
 ```
 
 <a name="#using-useeasydatastate-hook"></a>
@@ -47,14 +47,14 @@ be imported.
 
 *data-state.js*
 ```javascript
-import {EasyDataState} from '@easy-data-state/core';
+import {EasyDataState} from 'easy-data-state';
 
 export const state = new EasyDataState();
 ```
 
 *component-file.jsx*
 ```javascript
-import {useEasyDataState} from '@easy-data-state/react';
+import {useEasyDataState} from 'easy-data-state-react';
 import {state}            from './data-state';
 
 export function SomeComponent() {
@@ -84,8 +84,8 @@ indicating whether to return an `EasyDateState` instance along with subscribed-t
 
 *data-state.js*
 ```javascript
-import {EasyDataState}             from '@easy-data-state/core';
-import {generateEasyDataStateHook} from '@easy-data-state/react';
+import {EasyDataState}             from 'easy-data-state';
+import {generateEasyDataStateHook} from 'easy-data-state-react';
 
 export const state = new EasyDataState();
 export const useGlobalState = generateEasyDataStateHook(state);
