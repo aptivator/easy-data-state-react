@@ -20,7 +20,7 @@
     "url": "https://github.com/aptivator/easy-data-state-react/issues"
   },
   "dependencies": {
-    "react": ">16.7.0"
+    "react": ">=16.7.0"
   },
   "devDependencies": {
     "@babel/cli": "~7.20.7",
