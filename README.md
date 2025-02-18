@@ -206,7 +206,7 @@ are not required.  There is no need for some custom JSX structure to encapsulate
 A component is re-rendered only when the component's subscribed-to data changes.  `EasyDataState`
 instance is framework-agnostic and can be used anywhere within an application.  Testing of data
 state-linked components is straightforward: only a component and an `EasyDataState` instance are
-needed (See [tests](./test/easy-data-state-react.test.js)).  Performance is not compromised.  And,
+needed (see [tests](./test/easy-data-state-react.test.js)).  Performance is not compromised.  And,
 the code footprint needed to facilitate all of that is several times smaller than that of contexts.
 
 <a name="atom-based-approaches"></a>
