@@ -3,8 +3,8 @@
 ## Table of Contents
 
 * [Introduction](#introduction)
+* [Installation](#installation)
 * [Usage](#usage)
-  * [Installation](#installation)
   * [Using useEasyDataState() hook](#using-useeasydatastate-hook)
   * [Generating a Hook Bound to an EasyDataState Instance](#generating-a-hook-bound-to-an-easydatastate-instance)
   * [General Notes](#general-notes)
@@ -23,17 +23,17 @@ The library provides React bindings to connect a component state to an `EasyData
 instance.  The bindings trigger a component render in response to the changes of the data
 upon which a component depends.
 
-<a name="usage"></a>
-## Usage
-
 <a name="installation"></a>
-### Installation
+## Installation
 
 To fetch the library, run the following command.
 
 ```
 npm install --save easy-data-state easy-data-state-react
 ```
+
+<a name="usage"></a>
+## Usage
 
 <a name="#using-useeasydatastate-hook"></a>
 ### Using useEasyDataState() hook
