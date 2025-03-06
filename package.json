@@ -20,7 +20,8 @@
     "url": "https://github.com/aptivator/easy-data-state-react/issues"
   },
   "dependencies": {
-    "react": ">=16.7.0"
+    "react": ">=16.7.0",
+    "easy-data-state": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "~7.20.7",
@@ -40,8 +41,5 @@
     "rimraf": "^3.0.2",
     "rollup": "~3.8.0",
     "run-when-changed": "~2.1.0"
-  },
-  "peerDependencies": {
-    "easy-data-state": "^1.0.0"
   }
 }

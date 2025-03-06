@@ -31,7 +31,7 @@ upon which a component depends.
 To fetch the library, run the following command.
 
 ```
-npm install --save easy-data-state easy-data-state-react
+npm install --save easy-data-state-react
 ```
 
 <a name="usage"></a>
