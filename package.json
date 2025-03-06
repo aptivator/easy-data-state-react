@@ -1,6 +1,6 @@
 {
   "name": "easy-data-state-react",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "React bindings to link a component state to an EasyDataState instance",
   "main": "dist/easy-data-state.js",
   "scripts": {

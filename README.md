@@ -265,6 +265,6 @@ an atom’s value setter, which is then called.  To update the values of multipl
 process has to be repeated for each atom.  Updating/writing multiple values with `easy-data-state`
 requires just one update call with data addresses and their new values specified as a plain object.
 
-Libraries such as Recoil are fairly large.  `easy-data-state` and `easy-data-state-read` bindings
+Libraries such as Recoil are fairly large.  `easy-data-state` and `easy-data-state-react` bindings
 are under 400 lines with no dependencies.  The library is simpler, requires less code to use, is
 faster than the alternatives, and allows management of a complex data state through a single instance.
