@@ -5,8 +5,10 @@
 * [Introduction](#introduction)
 * [Installation](#installation)
 * [Usage](#usage)
-  * [Using useEasyDataState() hook](#using-useeasydatastate-hook)
   * [Generating a Hook Bound to an EasyDataState Instance](#generating-a-hook-bound-to-an-easydatastate-instance)
+    * [Basic Example](#basic-example)
+    * [Example with All Options](#example-with-all-options)
+  * [Using useEasyDataState() hook](#using-useeasydatastate-hook)
   * [General Notes](#general-notes)
 * [Development](#development)
   * [Development Setup](#development-setup)
@@ -34,6 +36,83 @@ npm install --save easy-data-state easy-data-state-react
 
 <a name="usage"></a>
 ## Usage
+
+<a name="generating-a-hook-bound-to-an-easydatastate-instance"></a>
+### Generating a Hook Bound to an EasyDataState Instance
+
+`generateEasyDataStateHook()` accepts an `EasyDataState` object and returns a React hook
+bound to the instance.  The hook accepts data state subscription address(es) and optional
+default value and configurations.  The hook's fourth parameter is a flag (default `false`),
+indicating whether to return an `EasyDateState` instance along with subscribed-to data.
+
+<a name="basic-example"></a>
+#### Basic Example
+
+The code below is taken from the [example](./example/src/App.jsx) included in this repo.
+It implements 100 `Counter` components with each listening to and being able to update
+the global counter.
+
+*data-state.js*
+```javascript
+import {EasyDataState}             from 'easy-data-state';
+import {generateEasyDataStateHook} from 'easy-data-state-react';
+
+export const state = new EasyDataState();
+export const useGlobalState = generateEasyDataStateHook(state);
+```
+
+*component-file.jsx*
+```javascript
+import {useGlobalState} from './data-state';
+
+function Counter() {
+  let counter = useGlobalState('counter', 0);
+
+  return <div>
+    <button onClick = {() => state.write('counter', (counter = 0) => ++counter)}>
+       Increment {counter}
+     </button>
+  </div>;
+}
+```
+
+<a name="example-with-all-options"></a>
+#### Example with All Options
+
+The following example shows the usage of all of the parameters that can be
+given to the generated state hook.
+
+*component-file.jsx*
+```javascript
+import {useGlobalState} from './data-state';
+
+export function SomeComponent() {
+  let dataAddresses = [['permissions.collection', ['name', 'status']], 'info'];
+  let defaultValue = {};
+  let configs = {asArray: true};
+  let returnState = true;
+  let [[name = '', status = '', info = ''], state] = useGlobalState(dataAddresses, defaultValue, configs, returnState);
+
+  return <>
+    <div>{name}</div>
+    <div>{status}</div>
+    <div>{info}</div>
+  <>;
+}
+```
+
+*another-file.js*
+```javascript
+import {state} from './data-state';
+
+state.write({
+  'permissions.collection': {
+    name: 'name', 
+    status: 'valid'
+  }, 
+  info: 'i'
+}); //triggers SomeComponent render
+```
 
 <a name="#using-useeasydatastate-hook"></a>
 ### Using useEasyDataState() hook
@@ -72,55 +151,6 @@ export function SomeComponent() {
 import {state} from './data-state';
 
 state.write('message', 'some message'); //triggers SomeComponent render
-```
-
-<a name="generating-a-hook-bound-to-an-easydatastate-instance"></a>
-### Generating a Hook Bound to an EasyDataState Instance
-
-`generateEasyDataStateHook()` accepts an `EasyDataState` object and returns a React hook
-bound to the instance.  The hook accepts data state subscription address(es) and optional
-default value and configurations.  The hook's fourth parameter is a flag (default `false`),
-indicating whether to return an `EasyDateState` instance along with subscribed-to data.
-
-*data-state.js*
-```javascript
-import {EasyDataState}             from 'easy-data-state';
-import {generateEasyDataStateHook} from 'easy-data-state-react';
-
-export const state = new EasyDataState();
-export const useGlobalState = generateEasyDataStateHook(state);
-```
-
-*component-file.jsx*
-```javascript
-import {useGlobalState} from './data-state';
-
-export function SomeComponent() {
-  let dataAddresses = [['permissions.collection', ['name', 'status']], 'info'];
-  let defaultValue = {};
-  let configs = {asArray: true};
-  let returnState = true;
-  let [[name = '', status = '', info = ''], state] = useGlobalState(dataAddresses, defaultValue, configs, returnState);
-
-  return <>
-    <div>{name}</div>
-    <div>{status}</div>
-    <div>{info}</div>
-  <>;
-}
-```
-
-*another-file.js*
-```javascript
-import {state} from './data-state';
-
-state.write({
-  'permissions.collection': {
-    name: 'name', 
-    status: 'valid'
-  }, 
-  info: 'i'
-}); //triggers SomeComponent render
 ```
 
 <a name="general-notes"></a>
