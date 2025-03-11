@@ -63,7 +63,7 @@ export const useGlobalState = generateEasyDataStateHook(state);
 
 *component-file.jsx*
 ```javascript
-import {useGlobalState} from './data-state';
+import {state, useGlobalState} from './data-state';
 
 function Counter() {
   let counter = useGlobalState('counter', 0);
