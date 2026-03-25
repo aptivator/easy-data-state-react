@@ -1,14 +1,15 @@
 {
   "name": "easy-data-state-react",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "React bindings to link a component state to an EasyDataState instance",
   "main": "dist/easy-data-state.js",
   "scripts": {
     "build": "rimraf ./dist && rollup --bundleConfigAsCjs -c ./build/rollup.config.js && copyfiles README.md .npmrc .npmignore ./dist",
-    "test": "mocha ./test/**/*.test.js ./test/*.test.js --require @babel/register",
+    "test": "mocha ./test/**/*.test.jsx ./test/*.test.jsx --require @babel/register",
     "test:coverage": "c8 --reporter=text npm run test",
-    "dev": "npm test & run-when-changed --watch \"src/**/*.js\" --watch \"test/**/*.js\" --exec \"npm test\"",
-    "dev:coverage": "npm run test:coverage & run-when-changed --watch \"src/**/*.js\" --watch \"test/**/*.js\" --exec \"npm run test:coverage\""
+    "dev": "npm test & run-when-changed --watch \"src/**/*.js\" --watch \"test/**/*.jsx\" --exec \"npm test\"",
+    "dev:coverage": "npm run test:coverage & run-when-changed --watch \"src/**/*.js\" --watch \"test/**/*.jsx\" --exec \"npm run test:coverage\"",
+    "version": "npm version --no-git-tag-version --"
   },
   "author": "Dmitriy A. Nesterkin",
   "license": "BSD-3-Clause",
@@ -20,8 +21,8 @@
     "url": "https://github.com/aptivator/easy-data-state-react/issues"
   },
   "dependencies": {
-    "react": ">=16.7.0",
-    "easy-data-state": "^1.0.0"
+    "easy-data-state": "^1.1.0",
+    "react": ">=16.7.0"
   },
   "devDependencies": {
     "@babel/cli": "~7.20.7",

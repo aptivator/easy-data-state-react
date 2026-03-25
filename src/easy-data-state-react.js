@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {state}               from 'easy-data-state';
 
 export function generateEasyDataStateHook(state) {
   return function(addresses, defaultValue, configs = {}, returnState) {
@@ -17,3 +18,7 @@ export function useEasyDataState(state, addresses, defaultValue, configs = {}, r
 
   return value;
 }
+
+export const useGlobalState = generateEasyDataStateHook(state);
+
+export {state};

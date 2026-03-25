@@ -1,11 +1,11 @@
-import {EasyDataState}             from '@easy-data-state/core';
-import {expect}                    from 'chai';
-import React                       from 'react';
-import {act}                       from 'react';
-import {createRoot}                from 'react-dom/client';
-import {generateEasyDataStateHook} from '../src/easy-data-state-react';
-import {useEasyDataState}          from '../src/easy-data-state-react';
-import {rootContainer}             from './_lib/test-dom';
+import {expect}                                   from 'chai';
+import {EasyDataState, state as initializedState} from 'easy-data-state';
+import React                                      from 'react';
+import {act}                                      from 'react';
+import {createRoot}                               from 'react-dom/client';
+import {generateEasyDataStateHook}                from '../src/easy-data-state-react';
+import {useEasyDataState, useGlobalState}         from '../src/easy-data-state-react';
+import {rootContainer}                            from './_lib/test-dom';
 
 global.IS_REACT_ACT_ENVIRONMENT = true
 
@@ -16,6 +16,24 @@ describe(`EasyDataState's React Bindings`, () => {
   beforeEach(() => {
     state = new EasyDataState();
     act(() => root.render());
+  });
+
+  describe('pre-initialized state and its hook', () => {
+    it('uses already initialized state instance and its React hook', () => {
+      let data = 'some data';
+
+      function Component() {
+        let data = useGlobalState('data');
+        return <div id='data'>{data}</div>;
+      }
+
+      act(() => {
+        root.render(<Component />);
+        initializedState.write({data});
+      });
+
+      expect(document.getElementById('data').textContent).to.equal(data);
+    });
   });
 
   describe('generateEasyDataStateHook()', () => {
@@ -33,12 +51,12 @@ describe(`EasyDataState's React Bindings`, () => {
 
       act(() => {
         root.render(<App />);
-        state.write('message', message);
+        state.write(message, message);
       });
 
       expect(document.getElementById('test').textContent).to.equal(message);
       message = 'another message';
-      act(() => state.write('message', message));
+      act(() => state.write({message}));
       expect(document.getElementById('test').textContent).to.equal(message);
     });
 

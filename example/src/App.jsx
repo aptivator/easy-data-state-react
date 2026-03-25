@@ -1,8 +1,5 @@
-import {EasyDataState}             from 'easy-data-state';
-import {generateEasyDataStateHook} from 'easy-data-state-react';
+import {state, useGlobalState} from './_lib/state';
 
-let state = new EasyDataState();
-let useGlobalState = generateEasyDataStateHook(state);
 let styles = {padding: '10px', display: 'inline-block', userSelect: 'none'};
 
 function Counter() {
@@ -16,5 +13,5 @@ function Counter() {
 }
 
 export default function App() {
-  return Array(100).fill(0).map((v, i) => <Counter key={i} />);
+  return Array(1000).fill(0).map((v, i) => <Counter key={i} />);
 }
