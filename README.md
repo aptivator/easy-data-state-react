@@ -5,9 +5,11 @@
 * [Introduction](#introduction)
 * [Installation](#installation)
 * [Usage](#usage)
+  * [Using the Already Initialized EasyDataState Instance and Its Hook](#using-the-already-initialized-easydatastate-instance-and-its-hook)
   * [Generating a Hook Bound to an EasyDataState Instance](#generating-a-hook-bound-to-an-easydatastate-instance)
     * [Basic Example](#basic-example)
     * [Example with All Options](#example-with-all-options)
+    * [Generating a Hook with Predefined Configurations](#generating-a-hook-with-predefined-configurations)
   * [Using useEasyDataState() hook](#using-useeasydatastate-hook)
   * [General Notes](#general-notes)
 * [Development](#development)
@@ -37,13 +39,37 @@ npm install --save easy-data-state-react
 <a name="usage"></a>
 ## Usage
 
+### Using the Already Initialized EasyDataState Instance and Its Hook
+
+Most applications require only one data state instance and a React hook bound to
+that data state.  `easy-data-state` provides a default instance of the data state
+exported as the `state`.  `easy-data-state-react` uses the latter to initialize
+and export the state-bound React hook.  For convenience, `easy-data-state-react`
+also exports the `state` provided by the `easy-data-state` package.
+
+*component-file.jsx*
+```javascript
+import {state, useGlobalState} from 'easy-data-state-react';
+
+function Counter() {
+  let counter = useGlobalState('counter', 0);
+
+  return <div>
+    <button onClick = {() => state.write('counter', (counter = 0) => ++counter)}>
+       Increment {counter}
+     </button>
+  </div>;
+}
+```
+
 <a name="generating-a-hook-bound-to-an-easydatastate-instance"></a>
 ### Generating a Hook Bound to an EasyDataState Instance
 
-`generateEasyDataStateHook()` accepts an `EasyDataState` object and returns a React hook
-bound to the instance.  The hook accepts data state subscription address(es) and optional
-default value and configurations.  The hook's fourth parameter is a flag (default `false`),
-indicating whether to return an `EasyDateState` instance along with subscribed-to data.
+`generateEasyDataStateHook()` accepts an `EasyDataState` object and optional base settings
+and returns a React hook bound to the instance.  The hook accepts data state subscription
+address(es) and optional default value and configurations.  The hook's fourth parameter
+is a flag (default `false`), indicating whether to return an `EasyDateState` instance
+along with the subscribed-to data.
 
 <a name="basic-example"></a>
 #### Basic Example
@@ -57,19 +83,19 @@ the global counter.
 import {EasyDataState}             from 'easy-data-state';
 import {generateEasyDataStateHook} from 'easy-data-state-react';
 
-export const state = new EasyDataState();
-export const useGlobalState = generateEasyDataStateHook(state);
+export const customState = new EasyDataState();
+export const useCustomState = generateEasyDataStateHook(customState);
 ```
 
 *component-file.jsx*
 ```javascript
-import {state, useGlobalState} from './data-state';
+import {customState, useCustomState} from './data-state';
 
 function Counter() {
-  let counter = useGlobalState('counter', 0);
+  let counter = useCustomState('counter', 0);
 
   return <div>
-    <button onClick = {() => state.write('counter', (counter = 0) => ++counter)}>
+    <button onClick = {() => customState.write('counter', (counter = 0) => ++counter)}>
        Increment {counter}
      </button>
   </div>;
@@ -84,14 +110,14 @@ given to the generated state hook.
 
 *component-file.jsx*
 ```javascript
-import {useGlobalState} from './data-state';
+import {useCustomState} from './data-state';
 
 export function SomeComponent() {
   let dataAddresses = [['permissions.collection', ['name', 'status']], 'info'];
-  let defaultValue = {};
+  let defaultValue = [];
   let configs = {asArray: true};
   let returnState = true;
-  let [[name = '', status = '', info = ''], state] = useGlobalState(dataAddresses, defaultValue, configs, returnState);
+  let [[name = '', status = '', info = ''], state] = useCustomState(dataAddresses, defaultValue, configs, returnState);
 
   return <>
     <div>{name}</div>
@@ -103,15 +129,48 @@ export function SomeComponent() {
 
 *another-file.js*
 ```javascript
-import {state} from './data-state';
+import {customState} from './data-state';
 
-state.write({
+customState.write({
   'permissions.collection': {
     name: 'name', 
     status: 'valid'
   }, 
   info: 'i'
 }); //triggers SomeComponent render
+```
+
+#### Generating a Hook with Predefined Configurations
+
+Custom configurations that apply to the majority of `easy-data-state` operations can be
+preset during a hook generation.  These base configurations can be overridden (as needed)
+at each invocation of the state hook.  When a hook is configured to return state data as
+an array, then its optional default value can only be an array.  If a hook is configured
+to return state data as an object, then its default value can only be an object.  In cases
+when a default value does not match a return data configuration, the library will provide
+either an empty array (`[]`) or object (`{}`).
+
+*data-state.js*
+```javascript
+import {EasyDataState}             from 'easy-data-state';
+import {generateEasyDataStateHook} from 'easy-data-state-react';
+
+export const customState = new EasyDataState();
+export const useCustomState = generateEasyDataStateHook(customState, {asArray: true});
+```
+
+*component-file.jsx*
+```javascript
+import {useCustomState} from './data-state';
+
+function Counter() {
+  let [message, status] = useCustomState(['message', 'status']);
+
+  return <div>
+    <div>{status}</div>
+    <div>{message}</div>
+  </div>;
+}
 ```
 
 <a name="#using-useeasydatastate-hook"></a>
@@ -128,19 +187,19 @@ be imported.
 ```javascript
 import {EasyDataState} from 'easy-data-state';
 
-export const state = new EasyDataState();
+export const customState = new EasyDataState();
 ```
 
 *component-file.jsx*
 ```javascript
 import {useEasyDataState} from 'easy-data-state-react';
-import {state}            from './data-state';
+import {customState}            from './data-state';
 
 export function SomeComponent() {
   let dataAddress = 'message',
   let defaultValue = [];
   let configs = {asArray: true};
-  let [message = ''] = useEasyDataState(state, dataAddress, defaultValue, configs);
+  let [message = ''] = useEasyDataState(customState, dataAddress, defaultValue, configs);
 
   return <div className='message'>{message}</div>;
 }
@@ -148,9 +207,9 @@ export function SomeComponent() {
 
 *another-file.js*
 ```javascript
-import {state} from './data-state';
+import {customState} from './data-state';
 
-state.write('message', 'some message'); //triggers SomeComponent render
+customState.write('message', 'some message'); //triggers SomeComponent render
 ```
 
 <a name="general-notes"></a>

@@ -37,60 +37,144 @@ describe(`EasyDataState's React Bindings`, () => {
   });
 
   describe('generateEasyDataStateHook()', () => {
-    let useGlobalState;
+    describe('generating an EasyDataState-bound hook with default settings', () => {
+      let useGlobalState;
 
-    beforeEach(() => useGlobalState = generateEasyDataStateHook(state));
-
-    it('links a React component state to an EasyDataState value(s)', () => {
-      function App() {
-        let message = useGlobalState('message');
-        return <div id='test'>{message}</div>;
-      }
-
-      let message = 'message';
-
-      act(() => {
-        root.render(<App />);
-        state.write(message, message);
+      beforeEach(() => useGlobalState = generateEasyDataStateHook(state));
+  
+      it('links a React component state to an EasyDataState value(s)', () => {
+        function App() {
+          let message = useGlobalState('message');
+          return <div id='test'>{message}</div>;
+        }
+  
+        let message = 'message';
+  
+        act(() => {
+          root.render(<App />);
+          state.write(message, message);
+        });
+  
+        expect(document.getElementById('test').textContent).to.equal(message);
+        message = 'another message';
+        act(() => state.write({message}));
+        expect(document.getElementById('test').textContent).to.equal(message);
       });
-
-      expect(document.getElementById('test').textContent).to.equal(message);
-      message = 'another message';
-      act(() => state.write({message}));
-      expect(document.getElementById('test').textContent).to.equal(message);
+  
+      it('accepts default value and configurations', () => {
+        let address = 'message';
+        let message = 'message';
+  
+        function App() {
+          let defaultValue = {};
+          let configs = {asObject: true};
+          let {message} = useGlobalState(address, defaultValue, configs);
+          return <div id='test'>{message}</div>;
+        }
+  
+        act(() => {
+          root.render(<App />);
+          state.write(address, message);
+        });
+  
+        expect(document.getElementById('test').textContent).to.equal(message);
+      });
+  
+      it('can return EasyDataState instance along with subscribed-to data', () => {
+        let writing = 'message';
+  
+        function App() {
+          let returnState = true;
+          let [{message}, state] = useGlobalState('message', {}, {asObject: true}, returnState);
+          state.write('message', writing);
+          return <div id='test'>{message}</div>;
+        }
+  
+        act(() => root.render(<App />));
+        expect(document.getElementById('test').textContent).to.equal(writing);
+      });
     });
 
-    it('accepts default value and configurations', () => {
-      let address = 'message';
-      let message = 'message';
+    describe('generating an EasyDataState-bound hook with custom settings', () => {
+      let useGlobalStateArray; 
+      let useGlobalStateObject;
 
-      function App() {
-        let defaultValue = {};
-        let configs = {asObject: true};
-        let {message} = useGlobalState(address, defaultValue, configs);
-        return <div id='test'>{message}</div>;
-      }
-
-      act(() => {
-        root.render(<App />);
-        state.write(address, message);
+      before(() => {
+        useGlobalStateArray = generateEasyDataStateHook(state, {asArray: true});
+        useGlobalStateObject = generateEasyDataStateHook(state, {asObject: true});
       });
 
-      expect(document.getElementById('test').textContent).to.equal(message);
-    });
+      it('produces a hook configured to return values as an array', () => {
+        function App() {
+          let [message] = useGlobalStateArray('message');
+          return <div id='test'>{message}</div>;
+        }
+  
+        let message = 'message';
+  
+        act(() => {
+          root.render(<App />);
+          state.write(message, message);
+        });
 
-    it('can return EasyDataState instance along with subscribed-to data', () => {
-      let writing = 'message';
+        expect(document.getElementById('test').textContent).to.equal(message);
+      });
 
-      function App() {
-        let returnState = true;
-        let [{message}, state] = useGlobalState('message', {}, {asObject: true}, returnState);
-        state.write('message', writing);
-        return <div id='test'>{message}</div>;
-      }
+      it('generates a hook configured to output values as an object', () => {
+        function App() {
+          let {message} = useGlobalStateObject('message');
+          return <div id='test'>{message}</div>;
+        }
+  
+        let message = 'message';
+  
+        act(() => {
+          root.render(<App />);
+          state.write(message, message);
+        });
 
-      act(() => root.render(<App />));
-      expect(document.getElementById('test').textContent).to.equal(writing);
+        expect(document.getElementById('test').textContent).to.equal(message);
+      });
+
+      it('replaces a non-array default value with an empty array ([]) when results are set to be returned as an array', () => {
+        let data = [];
+        
+        function App() {
+          let result = useGlobalStateArray('message', 'default');
+          data.push(result);
+          return <div id='test'>{result[0]}</div>;
+        }
+  
+        let message = 'message';
+  
+        act(() => {
+          root.render(<App />);
+          state.write(message, message);
+        });
+
+        expect(data.length).to.be.greaterThan(0);
+        expect(data[0]).to.eql([]);
+      });
+
+      it('replaces a non-object default value with an empty object ({}) when results are set to be returned as an object', () => {
+        let data = [];
+        
+        function App() {
+          let result = useGlobalStateObject('message', 'default');
+          data.push(result);
+          return <div id='test'>{result.message}</div>;
+        }
+  
+        let message = 'message';
+  
+        act(() => {
+          root.render(<App />);
+          state.write(message, message);
+        });
+
+        expect(data.length).to.be.greaterThan(0);
+        expect(data[0]).to.eql({});
+      });
     });
   });
 
